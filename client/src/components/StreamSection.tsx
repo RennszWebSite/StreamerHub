@@ -35,9 +35,9 @@ export default function StreamSection({
   const [streamToDisplay, setStreamToDisplay] = useState(currentStream);
   
   const checkChannelStatus = async () => {
-    if (!autoDetectStream && isAdmin) {
-      // If in admin mode with auto-detect off, use the forced channel
-      setIsLive(true);
+    if (!autoDetectStream) {
+      // If auto-detect is off, use the forced channel
+      setStreamToDisplay(currentStream);
       return;
     }
     
@@ -78,7 +78,9 @@ export default function StreamSection({
   }, [currentStream, autoDetectStream]);
 
   const handleSwitchStream = () => {
-    setIsDialogOpen(true);
+    if (isAdmin) {
+      setIsDialogOpen(true);
+    }
   };
   
   const handleDialogClose = () => {
@@ -98,24 +100,24 @@ export default function StreamSection({
   
   const currentStreamInfo = STREAM_CHANNELS.find(s => s.id === streamToDisplay);
   const streamTitle = currentStreamInfo ? 
-    (currentStreamInfo.type === 'IRL' ? 'IRL Stream' : 'Gaming Stream') : 
-    'Stream';
+    (currentStreamInfo.type === 'IRL' ? 'IRL Experience' : 'Gaming Stream') : 
+    'Premium Stream';
   
   return (
-    <section id="streams" className="mb-8">
+    <section id="streams" className="relative mb-8">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
-          <span className="text-primary">#</span> Live Streams
+        <h2 className="text-2xl font-bold flex items-center">
+          <span className="mr-2 text-primary">#</span> Premium Streams
+          {isLive && (
+            <div className="ml-4 flex items-center gap-2">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
+              <span className="text-sm font-medium text-green-500">LIVE</span>
+            </div>
+          )}
         </h2>
-        {isLive && (
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
-            <span className="text-sm text-green-500">LIVE NOW</span>
-          </div>
-        )}
       </div>
       
-      <Card className="overflow-hidden border border-primary border-opacity-50">
+      <Card className="overflow-hidden border border-white/10 bg-gradient-to-br from-black to-black/80 shadow-lg">
         <div className="aspect-video w-full bg-black">
           {isLive || (offlineBehavior !== "message" && !isLive) ? (
             <iframe 
@@ -125,36 +127,45 @@ export default function StreamSection({
               title="Twitch Stream"
             />
           ) : (
-            <div className="flex h-full items-center justify-center bg-card">
-              <div className="text-center">
-                <h3 className="mb-2 text-xl font-semibold text-primary">Currently Offline</h3>
-                <p className="text-muted-foreground">Check back later or visit our social media!</p>
+            <div className="relative flex h-full items-center justify-center bg-black">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black/80 opacity-70"></div>
+              <div className="z-10 max-w-xl p-6 text-center">
+                <h3 className="mb-3 text-2xl font-bold text-white">
+                  <span className="text-primary">Premium Content</span> Coming Soon
+                </h3>
+                <p className="text-lg text-gray-300">
+                  Our streamer is preparing exceptional content for you. Follow our social accounts for notifications!
+                </p>
               </div>
             </div>
           )}
         </div>
         
-        <CardContent className="flex flex-wrap items-center justify-between gap-4 p-4">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 p-6">
           <div>
-            <h3 className="text-lg font-semibold">{isLive ? streamTitle : "Offline"}</h3>
-            <p className="text-sm text-muted-foreground">
-              {isLive ? `@${streamToDisplay}` : "No live streams"}
+            <h3 className="text-xl font-bold tracking-tight">
+              {isLive ? streamTitle : `${currentStreamInfo?.type || 'Premium'} Channel`}
+            </h3>
+            <p className="text-sm text-gray-400">
+              {`@${streamToDisplay}`}
             </p>
           </div>
           
           <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              onClick={handleSwitchStream}
-              className="flex items-center gap-2 border-primary text-primary"
-            >
-              Switch Channel
-            </Button>
+            {isAdmin && (
+              <Button 
+                variant="outline" 
+                onClick={handleSwitchStream}
+                className="flex items-center gap-2 border-primary text-primary"
+              >
+                Switch Channel
+              </Button>
+            )}
             <a 
               href={`https://www.twitch.tv/${streamToDisplay}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded bg-primary px-3 py-2 text-sm text-white transition-colors hover:bg-primary/90"
+              className="flex items-center gap-2 rounded-md bg-gradient-to-r from-primary to-primary/80 px-4 py-2 text-sm font-medium text-white shadow-lg transition-all duration-300 hover:shadow-primary/30"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                 <path d="M11.64 5.93h1.43v4.28h-1.43m3.93-4.28H17v4.28h-1.43M7 2L3.43 5.57v12.86h4.28V22l3.58-3.57h2.85L20.57 12V2m-1.43 9.29l-2.85 2.85h-2.86l-2.5 2.5v-2.5H7.71V3.43h11.43Z" />
@@ -165,13 +176,15 @@ export default function StreamSection({
         </CardContent>
       </Card>
       
-      <StreamSwitcher
-        isOpen={isDialogOpen}
-        onClose={handleDialogClose}
-        selectedChannel={selectedChannel}
-        onSelectChannel={setSelectedChannel}
-        onConfirm={handleConfirmSwitch}
-      />
+      {isAdmin && (
+        <StreamSwitcher
+          isOpen={isDialogOpen}
+          onClose={handleDialogClose}
+          selectedChannel={selectedChannel}
+          onSelectChannel={setSelectedChannel}
+          onConfirm={handleConfirmSwitch}
+        />
+      )}
     </section>
   );
 }

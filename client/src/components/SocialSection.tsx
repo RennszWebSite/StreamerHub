@@ -36,30 +36,34 @@ export default function SocialSection({ className = "" }: SocialSectionProps) {
   };
   
   return (
-    <section id="socials" className={`mb-8 ${className}`}>
-      <h2 className="mb-4 text-2xl font-bold">
-        <span className="text-primary">#</span> Socials
+    <section id="socials" className={`${className}`}>
+      <h2 className="mb-6 text-2xl font-bold flex items-center">
+        <span className="mr-2 text-primary">#</span> Connect & Follow
       </h2>
       
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {SOCIAL_LINKS.map((social) => (
           <a
             key={social.id}
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-4 rounded-lg p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-            style={getBgStyle(social.bgColor)}
+            className="group flex flex-col items-center gap-2 rounded-xl border border-white/5 bg-black/30 p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-black/50 hover:shadow-lg hover:shadow-primary/10"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white bg-opacity-20">
+            <div 
+              className="mb-2 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110"
+              style={getBgStyle(social.bgColor)}
+            >
               {getIcon(social.icon)}
             </div>
-            <div>
-              <h3 className="font-semibold">{social.name}</h3>
-              <p className="text-sm text-gray-200">{social.username}</p>
-            </div>
+            <h3 className="font-bold text-white transition-colors group-hover:text-primary">{social.name}</h3>
+            <p className="text-sm text-gray-400">{social.username}</p>
           </a>
         ))}
+      </div>
+      
+      <div className="mt-8 text-center text-xs text-gray-500">
+        Made with ♥️ by sf.xen on discord
       </div>
     </section>
   );
