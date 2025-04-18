@@ -4,6 +4,7 @@
 @import './styles/themes/christmas.css';
 @import './styles/themes/spring.css';
 @import './styles/themes/summer.css';
+@import './styles/seasonal-effects.css';
 
 @tailwind base;
 @tailwind components;

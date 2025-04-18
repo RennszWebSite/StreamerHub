@@ -43,7 +43,7 @@ export default function AdminTabs({
 
   return (
     <div className="flex flex-col w-full max-w-full sm:max-w-3xl mx-auto p-3 sm:p-6">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-primary/10 text-primary">Admin</Badge>
           <h2 className="text-xl font-medium text-gray-400">
