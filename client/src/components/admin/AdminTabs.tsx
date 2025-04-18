@@ -42,7 +42,7 @@ export default function AdminTabs({
   };
 
   return (
-    <div className="flex flex-col w-full max-w-full sm:max-w-3xl mx-auto p-3 sm:p-6">
+    <div className="flex flex-col w-full max-w-full sm:max-w-3xl mx-auto p-2 sm:p-6">
       <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-primary/10 text-primary">Admin</Badge>
@@ -78,8 +78,8 @@ export default function AdminTabs({
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="mb-4 sm:mb-8 flex w-full flex-wrap gap-1 sm:gap-2 bg-black/20 p-1">
-          <TabsTrigger value="dashboard" className="flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/20 min-w-[120px]">
+        <TabsList className="mb-4 sm:mb-8 grid grid-cols-3 sm:flex sm:flex-wrap w-full gap-1 sm:gap-2 bg-black/20 p-1">
+          <TabsTrigger value="dashboard" className="flex-1 flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-primary/20 text-sm sm:text-base">
             <Gauge className="h-5 w-5" />
             <span>Dashboard</span>
           </TabsTrigger>
@@ -108,7 +108,7 @@ export default function AdminTabs({
         <TabsContent value="dashboard">
           <div className="rounded-lg border border-white/5 bg-black/30 p-4 sm:p-6">
             <h2 className="mb-4 text-xl font-bold">Welcome to your Dashboard</h2>
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-lg border border-white/5 bg-black/20 p-5">
                 <h3 className="font-semibold text-gray-400">Current Stream</h3>
                 <p className="mt-2 text-2xl font-bold">
@@ -177,7 +177,7 @@ export default function AdminTabs({
 
               <div className="md:col-span-2 lg:col-span-3">
                 <h3 className="mb-3 font-semibold text-gray-400">Quick Actions</h3>
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
                   <Button 
                     variant="outline" 
                     className="border-white/10 bg-black/40 hover:bg-black/60"
