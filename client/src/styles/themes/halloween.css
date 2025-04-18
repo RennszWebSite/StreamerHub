@@ -1,0 +1,10 @@
+/* Halloween theme */
+.theme-halloween {
+  --theme-bg-gradient: linear-gradient(to bottom right, #0e0008, #160703);
+  --theme-card-bg: linear-gradient(to bottom right, rgba(35, 10, 10, 0.8), rgba(15, 5, 5, 0.8));
+  --theme-section-bg: linear-gradient(to bottom, rgba(30, 10, 10, 0.8), rgba(15, 5, 0, 0.5));
+  --theme-accent-color: rgba(255, 87, 34, 0.3);
+  --theme-border-color: rgba(255, 87, 34, 0.2);
+  --theme-shadow: 0 8px 32px rgba(255, 87, 34, 0.1);
+  --theme-text-accent: #FF5722;
+}
