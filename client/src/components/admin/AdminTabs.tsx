@@ -42,7 +42,7 @@ export default function AdminTabs({
   };
 
   return (
-    <div className="flex flex-col w-full max-w-3xl mx-auto p-6">
+    <div className="flex flex-col w-full max-w-full sm:max-w-3xl mx-auto p-3 sm:p-6">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Badge variant="outline" className="bg-primary/10 text-primary">Admin</Badge>
@@ -78,7 +78,7 @@ export default function AdminTabs({
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="mb-8 flex w-full flex-wrap gap-2 bg-black/20 p-1">
+        <TabsList className="mb-4 sm:mb-8 flex w-full flex-wrap gap-1 sm:gap-2 bg-black/20 p-1">
           <TabsTrigger value="dashboard" className="flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/20 min-w-[120px]">
             <Gauge className="h-5 w-5" />
             <span>Dashboard</span>
