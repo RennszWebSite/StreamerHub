@@ -86,7 +86,7 @@ export default function Admin() {
   
   return (
     <Layout>
-      <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mx-auto max-w-6xl px-2 py-4 sm:px-4 sm:py-8">
         {loading ? (
           <div className="flex min-h-[60vh] items-center justify-center">
             <div className="flex flex-col items-center gap-4">
@@ -114,7 +114,7 @@ export default function Admin() {
             <LoginForm onLoginSuccess={handleLoginSuccess} />
           </div>
         ) : settings ? (
-          <div className="relative overflow-hidden rounded-xl border border-white/5 bg-black/50 shadow-xl backdrop-blur-sm">
+          <div className="relative overflow-hidden rounded-lg sm:rounded-xl border border-white/5 bg-black/50 shadow-xl backdrop-blur-sm">
             <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl"></div>
             <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl"></div>
             

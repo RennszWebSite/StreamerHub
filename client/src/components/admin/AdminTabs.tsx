@@ -78,30 +78,30 @@ export default function AdminTabs({
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="mb-8 grid w-full grid-cols-6 bg-black/20 p-1">
-          <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+        <TabsList className="mb-8 grid w-full grid-cols-2 gap-2 bg-black/20 p-1 sm:grid-cols-3 md:grid-cols-6">
+          <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Gauge className="h-4 w-4" /> 
-            Dashboard
+            <span className="hidden sm:inline">Dashboard</span>
           </TabsTrigger>
-          <TabsTrigger value="announcements" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+          <TabsTrigger value="announcements" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Megaphone className="h-4 w-4" /> 
-            Announcements
+            <span className="hidden sm:inline">Announcements</span>
           </TabsTrigger>
-          <TabsTrigger value="streams" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+          <TabsTrigger value="streams" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <MonitorPlay className="h-4 w-4" /> 
-            Streams
+            <span className="hidden sm:inline">Streams</span>
           </TabsTrigger>
-          <TabsTrigger value="appearance" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+          <TabsTrigger value="appearance" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Paintbrush className="h-4 w-4" /> 
-            Appearance
+            <span className="hidden sm:inline">Appearance</span>
           </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+          <TabsTrigger value="security" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Shield className="h-4 w-4" /> 
-            Security
+            <span className="hidden sm:inline">Security</span>
           </TabsTrigger>
-          <TabsTrigger value="community" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+          <TabsTrigger value="community" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Users className="h-4 w-4" /> 
-            Community
+            <span className="hidden sm:inline">Community</span>
           </TabsTrigger>
         </TabsList>
         
