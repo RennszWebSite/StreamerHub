@@ -171,6 +171,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const isValid = adminPasswordSetting.value === password;
     res.json({ valid: isValid });
   });
+  
+  // Change admin password (requires auth)
+  app.post("/api/auth/change-password", authenticateAdmin, async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: "Current and new passwords are required" });
+    }
+    
+    // Verify current password
+    const adminPasswordSetting = await storage.getSetting("admin_password");
+    if (!adminPasswordSetting) {
+      return res.status(500).json({ message: "Admin password not set" });
+    }
+    
+    if (adminPasswordSetting.value !== currentPassword) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+    
+    // Update the password
+    try {
+      const updatedSetting = await storage.saveSetting({
+        key: "admin_password",
+        value: newPassword
+      });
+      
+      res.json({ success: true, message: "Password changed successfully" });
+    } catch (error) {
+      console.error("Failed to update admin password:", error);
+      res.status(500).json({ message: "Failed to update admin password" });
+    }
+  });
 
   // Update theme.json (requires auth)
   app.post("/api/theme", authenticateAdmin, async (req, res) => {

@@ -9,7 +9,8 @@ import {
   Paintbrush, 
   Gauge, 
   Users,
-  ExternalLink
+  ExternalLink,
+  Shield
 } from "lucide-react";
 import { clearAuthToken } from "@/lib/storage";
 import AnnouncementTab from "./AnnouncementTab";

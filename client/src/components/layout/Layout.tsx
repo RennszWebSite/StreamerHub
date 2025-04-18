@@ -45,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     : 'animations-disabled';
 
   return (
-    <div className={`flex min-h-screen flex-col bg-background ${seasonalClass} ${animationClass}`}>
+    <div className={`flex min-h-screen flex-col main-background ${seasonalClass} ${animationClass}`}>
       {settings?.showBanner && (
         <AnnouncementBanner 
           text={settings.bannerText} 
@@ -57,6 +57,11 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
       <Footer />
+      
+      {/* Banner image at the bottom */}
+      <div className="fixed bottom-0 left-0 right-0 pointer-events-none z-[-1] opacity-20">
+        <img src="/assets/banner.svg" alt="" className="w-full h-auto" />
+      </div>
     </div>
   );
 }

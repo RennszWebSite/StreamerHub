@@ -339,6 +339,45 @@ export const verifyAdminPassword = async (password: string): Promise<boolean> =>
   }
 };
 
+export const changeAdminPassword = async (currentPassword: string, newPassword: string): Promise<{success: boolean, message: string}> => {
+  const token = getAuthToken();
+  if (!token) return { success: false, message: "Not authenticated" };
+  
+  try {
+    const response = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      return { 
+        success: false, 
+        message: data.message || "Failed to change password" 
+      };
+    }
+    
+    // Update the stored token to the new password
+    saveAuthToken(newPassword);
+    
+    return { 
+      success: true, 
+      message: data.message || "Password changed successfully" 
+    };
+  } catch (error) {
+    console.error("Failed to change admin password:", error);
+    return { 
+      success: false, 
+      message: "An error occurred while changing the password" 
+    };
+  }
+};
+
 // Helper for checking if a Twitch channel is live
 export const checkTwitchChannelStatus = async (channelName: string): Promise<boolean> => {
   try {
