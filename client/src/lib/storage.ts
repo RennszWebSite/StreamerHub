@@ -33,6 +33,9 @@ export const getSettings = (): AppSettings => {
   }
 };
 
+// Import seasonal theme utility
+import { applySeasonalTheme } from './themeUtils';
+
 // Function to update theme.json based on settings
 export const updateThemeFile = async (settings: Partial<AppSettings>): Promise<void> => {
   try {
@@ -62,6 +65,13 @@ export const updateThemeFile = async (settings: Partial<AppSettings>): Promise<v
       } else if (seasonalTheme === 'summer') {
         radius = 0.5;
         variant = 'vibrant';
+      }
+      
+      // Always apply the seasonal theme class immediately
+      if (settings.seasonalTheme) {
+        applySeasonalTheme(settings.seasonalTheme);
+      } else if (seasonalTheme) {
+        applySeasonalTheme(seasonalTheme);
       }
       
       // Fetch to modify the theme

@@ -7,6 +7,9 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Admin from "@/pages/admin";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { useEffect } from "react";
+import { getSettings } from "@/lib/storage";
+import { applySeasonalTheme } from "@/lib/themeUtils";
 
 function Router() {
   return (
@@ -16,6 +19,18 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
   );
+}
+
+function ThemeInitializer() {
+  useEffect(() => {
+    const settings = getSettings();
+    // Apply initial theme based on stored settings
+    if (settings.seasonalTheme) {
+      applySeasonalTheme(settings.seasonalTheme);
+    }
+  }, []);
+  
+  return <Router />;
 }
 
 function App() {
@@ -28,7 +43,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <ThemeInitializer />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

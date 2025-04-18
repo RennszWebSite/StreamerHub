@@ -1,3 +1,10 @@
+/* Import seasonal themes */
+@import './styles/themes/default.css';
+@import './styles/themes/halloween.css';
+@import './styles/themes/christmas.css';
+@import './styles/themes/spring.css';
+@import './styles/themes/summer.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,5 +16,44 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  /* Global CSS Variables */
+  :root {
+    --theme-bg-gradient: linear-gradient(to bottom right, #121212, #000000);
+    --theme-card-bg: linear-gradient(to bottom right, rgba(25, 25, 25, 0.8), rgba(10, 10, 10, 0.8));
+    --theme-section-bg: linear-gradient(to bottom, rgba(20, 20, 20, 0.8), rgba(10, 10, 10, 0.5));
+    --theme-accent-color: rgba(255, 107, 0, 0.3);
+    --theme-border-color: rgba(255, 107, 0, 0.2);
+    --theme-shadow: 0 8px 32px rgba(255, 107, 0, 0.1);
+    --theme-text-accent: #FF6B00;
+  }
+  
+  /* Apply theme styles to common elements */
+  .main-background {
+    background: var(--theme-bg-gradient);
+  }
+  
+  .themed-card {
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-border-color);
+    box-shadow: var(--theme-shadow);
+  }
+  
+  .themed-section {
+    background: var(--theme-section-bg);
+    border: 1px solid var(--theme-border-color);
+  }
+  
+  .themed-text {
+    color: var(--theme-text-accent);
+  }
+  
+  .themed-border {
+    border-color: var(--theme-border-color);
+  }
+  
+  .themed-accent {
+    background-color: var(--theme-accent-color);
   }
 }
