@@ -1,5 +1,14 @@
 import { AppSettings, Announcement, StreamSchedule } from "./types";
 
+// Storage keys
+const KEYS = {
+  SETTINGS: 'rennsz_stream_hub_settings',
+  AUTH: 'rennsz_stream_hub_auth',
+  THEME: 'rennsz_stream_hub_theme',
+  ANNOUNCEMENTS: 'rennsz_stream_hub_announcements',
+  SCHEDULE: 'rennsz_stream_hub_schedule'
+};
+
 // Default settings
 const DEFAULT_SETTINGS: AppSettings = {
   bannerText: "Welcome to Rennsz's Stream Hub!",
@@ -261,10 +270,11 @@ export const saveSchedule = async (schedule: Omit<StreamSchedule, 'id' | 'isActi
 
 export const fetchSettings = async (): Promise<AppSettings> => {
   try {
-    const response = await fetch("/api/settings");
-    if (!response.ok) throw new Error("Failed to fetch settings");
-    
-    const apiSettings = await response.json();
+    const localSettings = localStorage.getItem(KEYS.SETTINGS);
+    if (localSettings) {
+      return JSON.parse(localSettings);
+    }
+    return DEFAULT_SETTINGS;
     
     // Convert string values to appropriate types
     const typedSettings: Partial<AppSettings> = {
@@ -294,12 +304,17 @@ export const fetchSettings = async (): Promise<AppSettings> => {
 };
 
 export const saveSettingsToAPI = async (settings: Partial<AppSettings>): Promise<boolean> => {
-  const token = getAuthToken();
-  if (!token) return false;
-  
   try {
-    // Convert settings to API format (string values)
-    const apiSettings: Record<string, string> = {};
+    const currentSettings = await fetchSettings();
+    const newSettings = { ...currentSettings, ...settings };
+    localStorage.setItem(KEYS.SETTINGS, JSON.stringify(newSettings));
+    
+    // Also update theme if needed
+    if (settings.primaryColor || settings.seasonalTheme || settings.darkMode) {
+      await updateThemeFile(settings);
+    }
+    
+    return true;
     
     if (settings.bannerText !== undefined) apiSettings.banner_text = settings.bannerText;
     if (settings.showBanner !== undefined) apiSettings.show_banner = String(settings.showBanner);
@@ -355,21 +370,15 @@ export const saveSettingsToAPI = async (settings: Partial<AppSettings>): Promise
 
 export const verifyAdminPassword = async (password: string): Promise<boolean> => {
   try {
-    const response = await fetch("/api/auth/verify", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ password })
-    });
-    
-    if (!response.ok) return false;
-    
-    const { valid } = await response.json();
+    const storedPassword = localStorage.getItem(KEYS.AUTH);
+    if (!storedPassword && password === 'admin') { // Default password for first login
+      saveAuthToken(password);
+      return true;
+    }
+    const valid = storedPassword === password;
     if (valid) {
       saveAuthToken(password);
     }
-    
     return valid;
   } catch (error) {
     console.error("Failed to verify admin password:", error);

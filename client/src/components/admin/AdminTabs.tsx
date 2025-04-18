@@ -78,10 +78,10 @@ export default function AdminTabs({
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="mb-8 grid w-full grid-cols-2 gap-2 bg-black/20 p-1 sm:grid-cols-3 md:grid-cols-6">
-          <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
+        <TabsList className="mb-8 flex w-full flex-wrap gap-2 bg-black/20 p-1">
+          <TabsTrigger value="dashboard" className="flex-1 flex items-center justify-center gap-2 data-[state=active]:bg-primary/20 min-w-[120px]">
             <Gauge className="h-4 w-4" /> 
-            <span className="hidden sm:inline">Dashboard</span>
+            <span>Dashboard</span>
           </TabsTrigger>
           <TabsTrigger value="announcements" className="flex items-center justify-center gap-2 data-[state=active]:bg-primary/20">
             <Megaphone className="h-4 w-4" /> 
