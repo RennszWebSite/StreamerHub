@@ -47,9 +47,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/announcements", authenticateAdmin, async (req, res) => {
     try {
       const validated = insertAnnouncementSchema.parse(req.body);
-      const announcement = await storage.createAnnouncement(validated);
+      
+      // Ensure type is valid
+      if (!['default', 'special', 'important'].includes(validated.type)) {
+        validated.type = 'default';
+      }
+      
+      const announcement = await storage.createAnnouncement({
+        ...validated,
+        createdAt: new Date().toISOString()
+      });
+      
+      if (!announcement) {
+        throw new Error("Failed to create announcement");
+      }
+      
       res.status(201).json(announcement);
     } catch (error) {
+      console.error("Error creating announcement:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: error.errors });
       }
@@ -59,17 +74,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Delete announcement (requires auth)
   app.delete("/api/announcements/:id", authenticateAdmin, async (req, res) => {
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(400).json({ message: "Invalid ID" });
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const success = await storage.deleteAnnouncement(id);
+      if (!success) {
+        return res.status(404).json({ message: "Announcement not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting announcement:", error);
+      res.status(500).json({ message: "Failed to delete announcement" });
     }
-    
-    const success = await storage.deleteAnnouncement(id);
-    if (!success) {
-      return res.status(404).json({ message: "Announcement not found" });
-    }
-    
-    res.status(204).send();
   });
   
   // Get all settings
@@ -174,25 +194,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Change admin password (requires auth)
   app.post("/api/auth/change-password", authenticateAdmin, async (req, res) => {
-    const { currentPassword, newPassword } = req.body;
-    
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: "Current and new passwords are required" });
-    }
-    
-    // Verify current password
-    const adminPasswordSetting = await storage.getSetting("admin_password");
-    if (!adminPasswordSetting) {
-      return res.status(500).json({ message: "Admin password not set" });
-    }
-    
-    if (adminPasswordSetting.value !== currentPassword) {
-      return res.status(401).json({ message: "Current password is incorrect" });
-    }
-    
-    // Update the password
     try {
-      const updatedSetting = await storage.saveSetting({
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Current and new passwords are required" });
+      }
+      
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "New password must be at least 6 characters" });
+      }
+      
+      // Verify current password
+      const adminPasswordSetting = await storage.getSetting("admin_password");
+      if (!adminPasswordSetting) {
+        // If no password exists, create initial password
+        await storage.saveSetting({
+          key: "admin_password",
+          value: newPassword
+        });
+        return res.json({ success: true, message: "Password set successfully" });
+      }
+      
+      if (adminPasswordSetting.value !== currentPassword) {
+        return res.status(401).json({ message: "Current password is incorrect" });
+      }
+      
+      // Update the password
+      await storage.saveSetting({
         key: "admin_password",
         value: newPassword
       });
@@ -209,30 +238,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const themeData = req.body;
       
-      // Validate theme data
-      if (!themeData || 
-          typeof themeData.primary !== 'string' || 
-          !['dark', 'light'].includes(themeData.appearance) ||
-          typeof themeData.radius !== 'number' ||
-          !['professional', 'tint', 'vibrant'].includes(themeData.variant)) {
+      // Validate theme data with less strict requirements
+      if (!themeData || typeof themeData.primary !== 'string') {
         return res.status(400).json({ 
           message: "Invalid theme data format",
           required: {
-            primary: "string (color)",
-            appearance: "dark | light",
-            radius: "number",
-            variant: "professional | tint | vibrant"
+            primary: "string (color)"
           }
         });
       }
       
-      const success = updateThemeFile(themeData);
+      // Merge with existing theme data
+      const themePath = path.join(process.cwd(), 'theme.json');
+      const existingTheme = fs.existsSync(themePath) 
+        ? JSON.parse(fs.readFileSync(themePath, 'utf-8'))
+        : {};
+        
+      const updatedTheme = {
+        ...existingTheme,
+        ...themeData,
+      };
       
-      if (success) {
-        res.json({ success: true, message: "Theme updated successfully" });
-      } else {
-        res.status(500).json({ success: false, message: "Failed to update theme" });
-      }
+      fs.writeFileSync(themePath, JSON.stringify(updatedTheme, null, 2));
+      res.json({ success: true, message: "Theme updated successfully" });
     } catch (error) {
       console.error("Error updating theme:", error);
       res.status(500).json({ message: "Failed to update theme" });
