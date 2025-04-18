@@ -134,7 +134,7 @@ export default function AdminTabs({
                 <h3 className="font-semibold text-gray-400">Appearance</h3>
                 <div className="mt-2 flex items-center gap-3">
                   <div 
-                    className="h-8 w-8 rounded-full" {/* Increased size */}
+                    className="h-8 w-8 rounded-full" /* Increased size */
                     style={{ backgroundColor: settings.primaryColor }}
                   ></div>
                   <p className="text-xl font-semibold">
