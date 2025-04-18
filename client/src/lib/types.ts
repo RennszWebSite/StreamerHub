@@ -25,6 +25,17 @@ export interface StreamSchedule {
   isActive: boolean;
 }
 
+export interface QuickAction {
+  id: string;
+  label: string;
+  action: string;
+  setting: string;
+  value?: any;
+  toggleValue?: any;
+  icon?: string;
+  enabled: boolean;
+}
+
 export interface AppSettings {
   bannerText: string;
   showBanner: boolean;
@@ -38,6 +49,7 @@ export interface AppSettings {
   showNextStream: boolean;
   showSocials: boolean;
   seasonalTheme: 'default' | 'halloween' | 'christmas' | 'spring' | 'summer';
+  quickActions: QuickAction[];
 }
 
 export const STREAM_CHANNELS = [

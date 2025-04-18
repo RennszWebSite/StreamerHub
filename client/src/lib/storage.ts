@@ -4,7 +4,7 @@ import { AppSettings, Announcement, StreamSchedule } from "./types";
 const DEFAULT_SETTINGS: AppSettings = {
   bannerText: "Welcome to Rennsz's Stream Hub!",
   showBanner: false,
-  primaryColor: "#FF6B00",
+  primaryColor: "#FF5500",
   currentStream: "rennsz",
   autoDetectStream: true,
   offlineBehavior: "clips",
@@ -13,7 +13,43 @@ const DEFAULT_SETTINGS: AppSettings = {
   showAnnouncements: true,
   showNextStream: true,
   showSocials: true,
-  seasonalTheme: "default"
+  seasonalTheme: "default",
+  quickActions: [
+    {
+      id: "toggle-banner",
+      label: "Toggle Banner",
+      action: "toggle",
+      setting: "showBanner",
+      icon: "megaphone",
+      enabled: true
+    },
+    {
+      id: "switch-stream",
+      label: "Switch Stream",
+      action: "toggle-value",
+      setting: "currentStream",
+      value: "rennsz",
+      toggleValue: "rennszino",
+      icon: "twitch",
+      enabled: true
+    },
+    {
+      id: "toggle-auto-detect",
+      label: "Auto-Detect Stream",
+      action: "toggle",
+      setting: "autoDetectStream",
+      icon: "video",
+      enabled: true
+    },
+    {
+      id: "toggle-dark-mode",
+      label: "Dark Mode",
+      action: "toggle",
+      setting: "darkMode",
+      icon: "moon",
+      enabled: true
+    }
+  ]
 };
 
 // Local storage keys
@@ -243,7 +279,9 @@ export const fetchSettings = async (): Promise<AppSettings> => {
       showAnnouncements: apiSettings.show_announcements === "true",
       showNextStream: apiSettings.show_next_stream === "true",
       showSocials: apiSettings.show_socials === "true",
-      seasonalTheme: apiSettings.seasonal_theme as "default" | "halloween" | "christmas" | "spring" | "summer"
+      seasonalTheme: apiSettings.seasonal_theme as "default" | "halloween" | "christmas" | "spring" | "summer",
+      // Retain quick actions from default or local settings
+      quickActions: getSettings().quickActions
     };
     
     const mergedSettings = { ...DEFAULT_SETTINGS, ...typedSettings };
