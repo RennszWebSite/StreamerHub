@@ -370,16 +370,19 @@ export const saveSettingsToAPI = async (settings: Partial<AppSettings>): Promise
 
 export const verifyAdminPassword = async (password: string): Promise<boolean> => {
   try {
-    const storedPassword = localStorage.getItem(KEYS.AUTH);
-    if (!storedPassword && password === 'admin') { // Default password for first login
+    const response = await fetch("/api/auth/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    });
+
+    const data = await response.json();
+    if (data.valid) {
       saveAuthToken(password);
-      return true;
     }
-    const valid = storedPassword === password;
-    if (valid) {
-      saveAuthToken(password);
-    }
-    return valid;
+    return data.valid;
   } catch (error) {
     console.error("Failed to verify admin password:", error);
     return false;
