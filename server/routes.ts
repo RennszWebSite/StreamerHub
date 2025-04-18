@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { insertAnnouncementSchema, insertSettingSchema, insertStreamScheduleSchema } from "@shared/schema";
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Admin authentication middleware
 const authenticateAdmin = async (req: Request, res: Response, next: Function) => {
@@ -23,6 +25,17 @@ const authenticateAdmin = async (req: Request, res: Response, next: Function) =>
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Utility function to write to theme.json
+  const updateThemeFile = (themeData: any) => {
+    try {
+      const themePath = path.join(process.cwd(), 'theme.json');
+      fs.writeFileSync(themePath, JSON.stringify(themeData, null, 2));
+      return true;
+    } catch (error) {
+      console.error('Error updating theme.json:', error);
+      return false;
+    }
+  };
   // API routes
   // Get all announcements
   app.get("/api/announcements", async (req, res) => {
@@ -157,6 +170,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     const isValid = adminPasswordSetting.value === password;
     res.json({ valid: isValid });
+  });
+
+  // Update theme.json (requires auth)
+  app.post("/api/theme", authenticateAdmin, async (req, res) => {
+    try {
+      const themeData = req.body;
+      
+      // Validate theme data
+      if (!themeData || 
+          typeof themeData.primary !== 'string' || 
+          !['dark', 'light'].includes(themeData.appearance) ||
+          typeof themeData.radius !== 'number' ||
+          !['professional', 'tint', 'vibrant'].includes(themeData.variant)) {
+        return res.status(400).json({ 
+          message: "Invalid theme data format",
+          required: {
+            primary: "string (color)",
+            appearance: "dark | light",
+            radius: "number",
+            variant: "professional | tint | vibrant"
+          }
+        });
+      }
+      
+      const success = updateThemeFile(themeData);
+      
+      if (success) {
+        res.json({ success: true, message: "Theme updated successfully" });
+      } else {
+        res.status(500).json({ success: false, message: "Failed to update theme" });
+      }
+    } catch (error) {
+      console.error("Error updating theme:", error);
+      res.status(500).json({ message: "Failed to update theme" });
+    }
   });
 
   const httpServer = createServer(app);

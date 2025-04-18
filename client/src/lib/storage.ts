@@ -33,11 +33,68 @@ export const getSettings = (): AppSettings => {
   }
 };
 
+// Function to update theme.json based on settings
+export const updateThemeFile = async (settings: Partial<AppSettings>): Promise<void> => {
+  try {
+    // Only update if relevant theme properties are included
+    if (settings.primaryColor || settings.seasonalTheme || settings.darkMode) {
+      const currentSettings = getSettings();
+      const appearance = settings.darkMode !== undefined 
+        ? (settings.darkMode ? 'dark' : 'light')
+        : (currentSettings.darkMode ? 'dark' : 'light');
+      
+      const primaryColor = settings.primaryColor || currentSettings.primaryColor;
+      
+      // Adjust radius based on seasonal theme
+      let radius = 0.75; // Default radius
+      let variant = 'vibrant'; // Default variant
+      
+      const seasonalTheme = settings.seasonalTheme || currentSettings.seasonalTheme;
+      if (seasonalTheme === 'christmas') {
+        radius = 1.0;
+        variant = 'tint';
+      } else if (seasonalTheme === 'halloween') {
+        radius = 0.25;
+        variant = 'vibrant';
+      } else if (seasonalTheme === 'spring') {
+        radius = 0.85;
+        variant = 'professional';
+      } else if (seasonalTheme === 'summer') {
+        radius = 0.5;
+        variant = 'vibrant';
+      }
+      
+      // Fetch to modify the theme
+      const token = getAuthToken();
+      if (token) {
+        await fetch('/api/theme', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            primary: primaryColor,
+            appearance,
+            radius,
+            variant
+          })
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Failed to update theme file:", error);
+  }
+};
+
 export const saveSettings = (settings: Partial<AppSettings>): void => {
   try {
     const currentSettings = getSettings();
     const updatedSettings = { ...currentSettings, ...settings };
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+    
+    // Update theme.json when saving settings
+    updateThemeFile(settings);
   } catch (error) {
     console.error("Failed to save settings to localStorage:", error);
   }
@@ -220,13 +277,30 @@ export const saveSettingsToAPI = async (settings: Partial<AppSettings>): Promise
     
     if (!response.ok) throw new Error("Failed to save settings to API");
     
-    // Also update local storage
+    // Update local storage
     saveSettings(settings);
+    
+    // If appearance settings changed, update theme.json
+    if (settings.primaryColor !== undefined || 
+        settings.seasonalTheme !== undefined || 
+        settings.darkMode !== undefined) {
+      await updateThemeFile(settings);
+    }
+    
     return true;
   } catch (error) {
     console.error("Failed to save settings to API:", error);
+    
     // Still update local storage even if API fails
     saveSettings(settings);
+    
+    // Try to update theme.json even if API call fails
+    if (settings.primaryColor !== undefined || 
+        settings.seasonalTheme !== undefined || 
+        settings.darkMode !== undefined) {
+      await updateThemeFile(settings);
+    }
+    
     return false;
   }
 };

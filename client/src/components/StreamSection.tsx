@@ -119,14 +119,24 @@ export default function StreamSection({
       
       <Card className="overflow-hidden border border-white/10 bg-gradient-to-br from-black to-black/80 shadow-lg">
         <div className="aspect-video w-full bg-black">
-          {isLive || (offlineBehavior !== "message" && !isLive) ? (
+          {isLive ? (
+            // Live stream
             <iframe 
               src={`https://player.twitch.tv/?channel=${streamToDisplay}&parent=${window.location.hostname}`}
               allowFullScreen
               className="h-full w-full"
               title="Twitch Stream"
             />
+          ) : offlineBehavior === "clips" ? (
+            // Show clips when offline
+            <iframe 
+              src={`https://player.twitch.tv/?channel=${streamToDisplay}&video=v1777567503&parent=${window.location.hostname}&autoplay=true&collection=${streamToDisplay === 'rennsz' ? 'xd5aaHJYQRYu6w' : 'y8b_YcW39hxgTA'}`}
+              allowFullScreen
+              className="h-full w-full"
+              title="Twitch Clips"
+            />
           ) : (
+            // Offline message as fallback
             <div className="relative flex h-full items-center justify-center bg-black">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-black/80 opacity-70"></div>
               <div className="z-10 max-w-xl p-6 text-center">
