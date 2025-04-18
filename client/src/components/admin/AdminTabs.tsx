@@ -16,6 +16,7 @@ import { clearAuthToken } from "@/lib/storage";
 import AnnouncementTab from "./AnnouncementTab";
 import StreamTab from "./StreamTab";
 import AppearanceTab from "./AppearanceTab";
+import SecurityTab from "./SecurityTab";
 import { AppSettings } from "@/lib/types";
 
 interface AdminTabsProps {
@@ -77,7 +78,7 @@ export default function AdminTabs({
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="mb-8 grid w-full grid-cols-5 bg-black/20 p-1">
+        <TabsList className="mb-8 grid w-full grid-cols-6 bg-black/20 p-1">
           <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
             <Gauge className="h-4 w-4" /> 
             Dashboard
@@ -93,6 +94,10 @@ export default function AdminTabs({
           <TabsTrigger value="appearance" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
             <Paintbrush className="h-4 w-4" /> 
             Appearance
+          </TabsTrigger>
+          <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
+            <Shield className="h-4 w-4" /> 
+            Security
           </TabsTrigger>
           <TabsTrigger value="community" className="flex items-center gap-2 data-[state=active]:bg-primary/20">
             <Users className="h-4 w-4" /> 
@@ -261,6 +266,12 @@ export default function AdminTabs({
               showSocials={settings.showSocials}
               onSettingsChange={onSettingsChange}
             />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="security">
+          <div className="rounded-lg border border-white/5 bg-black/30 p-6">
+            <SecurityTab />
           </div>
         </TabsContent>
         
