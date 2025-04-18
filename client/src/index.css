@@ -20,13 +20,28 @@
   
   /* Global CSS Variables */
   :root {
-    --theme-bg-gradient: linear-gradient(to bottom right, #121212, #000000);
-    --theme-card-bg: linear-gradient(to bottom right, rgba(25, 25, 25, 0.8), rgba(10, 10, 10, 0.8));
-    --theme-section-bg: linear-gradient(to bottom, rgba(20, 20, 20, 0.8), rgba(10, 10, 10, 0.5));
-    --theme-accent-color: rgba(255, 107, 0, 0.3);
-    --theme-border-color: rgba(255, 107, 0, 0.2);
-    --theme-shadow: 0 8px 32px rgba(255, 107, 0, 0.1);
-    --theme-text-accent: #FF6B00;
+    --theme-bg-gradient: linear-gradient(135deg, rgba(10, 10, 10, 0.9), rgba(0, 0, 0, 0.95));
+    --theme-card-bg: linear-gradient(to bottom right, rgba(20, 20, 20, 0.8), rgba(5, 5, 5, 0.9));
+    --theme-section-bg: linear-gradient(to bottom, rgba(15, 15, 15, 0.85), rgba(5, 5, 5, 0.95));
+    --theme-accent-color: rgba(255, 85, 0, 0.3);
+    --theme-border-color: rgba(255, 85, 0, 0.2);
+    --theme-shadow: 0 12px 36px rgba(255, 85, 0, 0.15);
+    --theme-text-accent: #FF5500;
+    
+    /* Premium elements */
+    --premium-gradient: linear-gradient(135deg, #FF5500, #FF8C00);
+    --premium-glass: rgba(15, 15, 15, 0.6);
+    --premium-blur: blur(12px);
+    --premium-overlay: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+  }
+  
+  body {
+    background-image: 
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.75)),
+      url('/assets/rennsz_hero.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
   }
   
   /* Apply theme styles to common elements */
@@ -55,5 +70,38 @@
   
   .themed-accent {
     background-color: var(--theme-accent-color);
+  }
+  
+  /* Premium UI Classes */
+  .glass-card {
+    background: var(--premium-glass);
+    backdrop-filter: var(--premium-blur);
+    border: 1px solid var(--theme-border-color);
+    box-shadow: var(--theme-shadow);
+  }
+  
+  .premium-gradient {
+    background: var(--premium-gradient);
+  }
+  
+  .premium-gradient-text {
+    background: var(--premium-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .premium-shadow {
+    box-shadow: var(--theme-shadow);
+  }
+  
+  .premium-button {
+    background: var(--premium-gradient);
+    transition: all 0.3s ease;
+  }
+  
+  .premium-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(255, 85, 0, 0.4);
   }
 }
