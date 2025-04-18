@@ -81,7 +81,7 @@ export default function AppearanceTab({
   };
   
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h2 className="mb-4 text-lg font-semibold">Theme Settings</h2>
         <Card>

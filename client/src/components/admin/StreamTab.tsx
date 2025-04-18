@@ -102,7 +102,7 @@ export default function StreamTab({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h2 className="mb-4 text-lg font-semibold">Stream Status</h2>
         <Card>
